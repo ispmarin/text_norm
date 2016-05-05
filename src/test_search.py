@@ -6,7 +6,7 @@ doc3 = {'street': 'pindamonhangaba', 'number':123, 'complement':'bloco 22', 'cep
 
 schema = create_schema()
 idx = create_index(schema, 'indexdir')
-add_documents([doc1, doc2, doc3], idx)
-results = search('pindamonhagaba', 'street', idx)
+#add_documents([doc1, doc2, doc3], idx)
+results = search('pindamonhaga', 'street', idx)
 print(results)
 

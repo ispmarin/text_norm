@@ -1,8 +1,9 @@
 import os
-import whoosh.index as index
-from whoosh.index import create_in, open_dir, exists_in
-from whoosh.fields import Schema, TEXT, STORED, NUMERIC, ID
+from whoosh.fields import Schema, TEXT, NUMERIC, ID
+from whoosh.index import create_in, open_dir
 from whoosh.qparser import QueryParser
+from whoosh.query import FuzzyTerm
+
 
 def create_schema():
     return Schema(
@@ -13,13 +14,16 @@ def create_schema():
         cep=TEXT(stored=True),
         city=TEXT(stored=True),
         state=TEXT(stored=True)
-)
+    )
+
+
 def create_index(schema, index_path):
     if os.path.exists(index_path):
         return open_dir(index_path)
     else:
         os.mkdir(index_path)
         return create_in(index_path, schema)
+
 
 def add_documents(documents, s_index):
     writer = s_index.writer()
@@ -34,8 +38,23 @@ def add_documents(documents, s_index):
         )
     writer.commit()
 
+
+class GeralFuzzyTerm(FuzzyTerm):
+    def __init__(
+            self,
+            fieldname,
+            text,
+            boost=1.0,
+            maxdist=2,
+            prefixlength=1,
+            constantscore=True
+    ): super(GeralFuzzyTerm, self).__init__(
+        fieldname, text, boost, maxdist, prefixlength, constantscore
+    )
+
+
 def search(query_string, search_field, s_index):
-    qp = QueryParser(search_field, schema=s_index.schema)
+    qp = QueryParser(search_field, schema=s_index.schema, termclass=GeralFuzzyTerm)
     q = qp.parse(query_string)
     result_list = []
     with s_index.searcher() as s:
@@ -43,10 +62,4 @@ def search(query_string, search_field, s_index):
         print(list(q.docs(s)))
         for result in results:
             result_list.append(dict(result))
-
     return result_list
-
-
-
-
-
