@@ -63,3 +63,7 @@ def search(query_string, search_field, s_index):
         for result in results:
             result_list.append(dict(result))
     return result_list
+
+
+def all_documents(s_index):
+    return s_index.searcher().documents()

@@ -28,12 +28,14 @@ address_prefixes = prefixes
 
 if __name__ == "__main__":
 
-    #test_string="Rua XV de uátiki, 23124 bloco 23"
-    test_string="Viela 15 de uátiki, 23124 bloco 23"
+    test_string = "Rua XV de Novembro, 123 bloco 23 A"
 
-    print(normalize_address(test_string, punctuation, stopwords.words(language), address_prefixes))
+    normalized_address = normalize_address(
+        test_string, punctuation, stopwords.words(language), address_prefixes)
 
-    print(parse_address(fourth_step))
+
+    print(parse_address(normalized_address))
+
 
 
 
